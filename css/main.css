@@ -1,0 +1,39 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+}
+.container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+h1 {
+  font-weight: 100;
+  font-size: 5em;
+  margin: 10px;
+}
+
+th {
+  min-width: 200px;
+  background: #37a2c2;
+  color: white;
+  padding: 10px;
+  margin: 0;
+  font-size: 2em;
+}
+td {
+  text-align: center;
+}
+
+tr {
+  background: rgb(235, 235, 235);
+}
+tr:nth-child(odd) {
+  background: whitesmoke;
+}
