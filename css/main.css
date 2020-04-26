@@ -12,23 +12,39 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: linear-gradient(45deg, #667eea, #764ba2);
 }
+
+table {
+  border-radius: 10px;
+  box-shadow: 5px 3px 15px rgba(0,0,0,0.3);
+}
+
 h1 {
   font-weight: 100;
   font-size: 5em;
   margin: 10px;
+  color: white;
 }
 
 th {
   min-width: 200px;
-  background: #37a2c2;
+  background: rgb(45, 43, 70);
   color: white;
-  padding: 10px;
+  padding: 15px;
   margin: 0;
-  font-size: 2em;
+  font-size: 1.5em;
 }
+th:first-child {
+  border-top-left-radius: 10px;
+}
+th:last-child {
+  border-top-right-radius: 10px;
+}
+
 td {
   text-align: center;
+  padding: 10px;
 }
 
 tr {
@@ -36,4 +52,12 @@ tr {
 }
 tr:nth-child(odd) {
   background: whitesmoke;
+}
+
+tr:last-child td:first-child{
+  border-bottom-left-radius: 10px;
+}
+
+tr:last-child td:last-child{
+  border-bottom-right-radius: 10px;
 }
