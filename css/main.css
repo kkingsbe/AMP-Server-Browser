@@ -62,3 +62,52 @@ tr:last-child td:first-child{
 tr:last-child td:last-child{
   border-bottom-right-radius: 10px;
 }
+
+/*Make the table responsive*/
+@media
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px) {
+  h1 {
+    font-size: 3em;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  /* Hide table headers (but not display: none; for accessibility) */
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px
+  }
+
+  tr {
+    border: 1px solid #ccc;
+  }
+
+  td {
+    border: none;
+    border-bottom: 1px solid rgb(223, 223, 223);
+    position: relative;
+    padding-left: 50%;
+  }
+
+  td:before {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+  }
+
+  /* Label the data */
+  td:nth-of-type(1):before {content: "Game Name"}
+  td:nth-of-type(2):before {content: "Number of Players"}
+  td:nth-of-type(3):before {content: "Current Turn"}
+}
