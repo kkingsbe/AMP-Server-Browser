@@ -15,18 +15,25 @@ async function populateGamesTable() {
   console.log(games)
   console.log(games.length)
   for(let game of games) {
+    console.log(game)
     let tr = document.createElement("tr")
     let gameNameTD = document.createElement("td")
     let numPlayersTD = document.createElement("td")
     let currentTurnTD = document.createElement("td")
+    let turnsSubmittedTD = document.createElement("td")
+    let turnsLeftTD = document.createElement("td")
 
     gameNameTD.innerText = game.gameName
     numPlayersTD.innerText = game.numPlayers
-    currentTurnTD.innerText = game.currentPlayer
+    currentTurnTD.innerText = game.version=="old" ? game.currentPlayer : "(async game)"
+    turnsSubmittedTD.innerText = game.turnsSubmitted
+    turnsLeftTD.innerText = game.numPlayers - game.turnsSubmitted
 
     tr.appendChild(gameNameTD)
     tr.appendChild(numPlayersTD)
     tr.appendChild(currentTurnTD)
+    tr.appendChild(turnsSubmittedTD)
+    tr.appendChild(turnsLeftTD)
 
     document.getElementById("gamesTable").appendChild(tr)
   }
@@ -44,14 +51,35 @@ async function getActiveGames() {
       }
       for(let game of data.CommonPrefixes) {
         let config = await getGameConfig(game.Prefix)
-        let gameName = config.gameName
-        let numPlayers = config.users.length
-        let currentPlayer = config.currentTurn
-        games.push({
-          gameName: gameName,
-          numPlayers: numPlayers,
-          currentPlayer: currentPlayer
-        })
+
+        //New version of mp client
+        if(typeof(config.currentTurn) == 'undefined') {
+          let gameName = config.gameName
+          let numPlayers = config.users.length
+          let turnsSubmitted = 0
+          for(let user of config.users) {
+            if(user.hasPlayed) turnsSubmitted ++
+          }
+          console.log(config)
+          games.push({
+            version: "new",
+            gameName: gameName,
+            numPlayers: numPlayers,
+            turnsSubmitted: turnsSubmitted
+          })
+        } else { //Old version
+          let gameName = config.gameName
+          let numPlayers = config.users.length
+          let currentPlayer = config.currentTurn
+          console.log(config)
+          games.push({
+            version: "old",
+            gameName: gameName,
+            numPlayers: numPlayers,
+            currentPlayer: currentPlayer,
+            turnsSubmitted: config.warpVotes.length
+          })
+        }
       }
       resolve(games)
     })
