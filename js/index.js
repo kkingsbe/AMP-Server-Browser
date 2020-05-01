@@ -22,18 +22,21 @@ async function populateGamesTable() {
     let currentTurnTD = document.createElement("td")
     let turnsSubmittedTD = document.createElement("td")
     let turnsLeftTD = document.createElement("td")
+    let checkedOutTD = document.createElement("td")
 
     gameNameTD.innerText = game.gameName
     numPlayersTD.innerText = game.numPlayers
     currentTurnTD.innerText = game.version=="old" ? game.currentPlayer : "(async game)"
     turnsSubmittedTD.innerText = game.turnsSubmitted
     turnsLeftTD.innerText = game.numPlayers - game.turnsSubmitted
+    checkedOutTD.innerText = game.checkedOut ? "Yes" : "No"
 
     tr.appendChild(gameNameTD)
     tr.appendChild(numPlayersTD)
     tr.appendChild(currentTurnTD)
     tr.appendChild(turnsSubmittedTD)
     tr.appendChild(turnsLeftTD)
+    tr.appendChild(checkedOutTD)
 
     document.getElementById("gamesTable").appendChild(tr)
   }
@@ -51,6 +54,8 @@ async function getActiveGames() {
       }
       for(let game of data.CommonPrefixes) {
         let config = await getGameConfig(game.Prefix)
+        let checkedOut = await isCheckedOut(game.Prefix)
+        console.log(checkedOut)
 
         //New version of mp client
         if(typeof(config.currentTurn) == 'undefined') {
@@ -65,7 +70,8 @@ async function getActiveGames() {
             version: "new",
             gameName: gameName,
             numPlayers: numPlayers,
-            turnsSubmitted: turnsSubmitted
+            turnsSubmitted: turnsSubmitted,
+            checkedOut: checkedOut
           })
         } else { //Old version
           let gameName = config.gameName
@@ -77,7 +83,8 @@ async function getActiveGames() {
             gameName: gameName,
             numPlayers: numPlayers,
             currentPlayer: currentPlayer,
-            turnsSubmitted: config.warpVotes.length
+            turnsSubmitted: config.warpVotes.length,
+            checkedOut: false
           })
         }
       }
@@ -97,6 +104,21 @@ async function getGameConfig(gameName) {
         return
       }
       resolve(JSON.parse(data.Body.toString()))
+    })
+  })
+}
+
+async function isCheckedOut(gameName) {
+  return new Promise((resolve, reject) => {
+    const params = {
+      Key: `${gameName}lock`
+    }
+    s3.getObject(params, (err, data) => {
+      if (err) {
+        resolve(false)
+        return
+      }
+      resolve(true)
     })
   })
 }
